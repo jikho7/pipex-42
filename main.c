@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 21:08:46 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/04/17 23:00:21 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/04/18 22:06:20 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,27 @@
 
 int main(int ac, char **av, char **envp)
 {
-	(void)envp;
-	int status;
 	int pid2;
 	int pid1;
+	//int i = 0;
 	t_pipe data;
+	data.envp = envp;
+	data.cmd_arg1 = ft_split(av[2], ' ');
+	data.cmd_arg2 = ft_split(av[3], ' ');
+	data.cmd1 = av[2];
+	data.cmd2 = av[3];
+	//printf("CMD1%s\n", data.cmd1);
+	//printf("CMD2%s\n", data.cmd2);
+	data.path = get_path(envp);
+	//printf("path->%s\n", data.path);
+	data.access = ft_split(data.path, ':');
+	// while(data.access[i])
+	// {
+	// 	printf("%s\n", data.access[i]);
+	// 	i++;
+	// }
+	int pidcurrent = getpid();
+	printf("parent: current: %d\n", pidcurrent);
 
 	if(pipe(data.fd_pipe) == -1)
 		return (0); 	// (perror("Pipe: "));
@@ -27,24 +43,21 @@ int main(int ac, char **av, char **envp)
 		return(0);		// (perror("Fork: "));
 	if (pid1 == 0)
 	{
-		child_process_1(data, "ls");
+		child_process_1(data);
 	}
 	else
 	{
 		// enfant 2, cmd 2
-		int pidcurrent = getpid();
-		int pidp = getppid();
-		printf("child 2: current: %d, parent: %d\n", pidcurrent, pidp);
 		pid2 = fork();
 		if(pid2 == -1)
 			return(0);		// (perror("Fork: "));
 		if (pid2 == 0)
 		{
-			child_process_2(data, "ls", ac, &av[0]);
+			child_process_2(data, ac, &av[0]);
 		}
-				// parent
-		waitpid(-1, &status , 0);
-		waitpid(-1, &status , 0);
+		// parent
+		waitpid(data.pidcurrent1, 0 , 0);
+		waitpid(data.pidcurrent2, 0 , 0);
 		return (0);
 	}
 

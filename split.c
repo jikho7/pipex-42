@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 22:40:14 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/04/17 22:43:33 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/04/18 21:50:45 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ static void	write_word(char *dest, const char *word_begin, char sign)
 		dest[i] = word_begin[i];
 		i++;
 	}
+	dest[i++] = '/';
 	dest[i] = '\0';
 }
 
