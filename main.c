@@ -6,63 +6,75 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 21:08:46 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/04/18 22:39:36 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/03 18:31:36 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int main(int ac, char **av, char **envp)
+int	main(int ac, char **av, char **envp)
 {
-	int pid2;
-	int pid1;
-	//int i = 0;
-	t_pipe data;
-	//char *cmd1_path = NULL;
-	data.envp = envp;
-	data.cmd_arg1 = ft_split(av[2], ' ');
-	data.cmd_arg2 = ft_split(av[3], ' ');
-	data.cmd1 = av[2];
-	data.cmd2 = av[3];
-	//printf("CMD1%s\n", data.cmd1);
-	//printf("CMD2%s\n", data.cmd2);
-	data.path = get_path(envp);
-	//printf("path->%s\n", data.path);
-	data.access = ft_split(data.path, ':');
-	// while(data.access[i])
-	// {
-	// 	cmd1_path = ft_strjoin(data.access[i], data.cmd1);
-	// 	printf("CMD_PATH%s\n", cmd1_path);
-	//  	//printf("%s\n", data.access[i]);
-	//  	i++;
-	// }
-	int pidcurrent = getpid();
-	printf("parent: current: %d\n", pidcurrent);
+	int		i;
+	int		j;
+	t_pipe	d;
 
-	if(pipe(data.fd_pipe) == -1)
-		return (0); 	// (perror("Pipe: "));
-	pid1 = fork();
-	if(pid1 == -1)
-		return(0);		// (perror("Fork: "));
-	if (pid1 == 0)
+	i = 0;
+	j = 2;
+	d.envp = envp;
+	d.path = get_path(d.envp);
+	d.access = ft_split(d.path, ':', 1);
+	d.pid_main = getpid();
+	d.last_arg = av[ac - 2];
+	d.first_arg = av[2];
+	d.outfile = av[ac - 1];
+	if (ac <= 4)
+		error("pipex: Arguement missing\n");
+	if (ac > 4)
 	{
-		child_process_1(data);
-	}
-	else
-	{
-		// enfant 2, cmd 2
-		pid2 = fork();
-		if(pid2 == -1)
-			return(0);		// (perror("Fork: "));
-		if (pid2 == 0)
+		control_files(av[0], av[ac - 1]);
+		handle_pipes(&d.fd_pipe1, &d.fd_pipe2);
+		while (i < ac - 3)
 		{
-			child_process_2(data, ac, &av[0]);
+			if (i % 2 == 0)
+				child_process_0_2(d, av[j], d.first_arg, av[1]);
+			else
+				child_process_1_2(d, av[j], d.last_arg);
+			i++;
+			j++;
 		}
-		// parent
-		waitpid(data.pidcurrent1, 0 , 0);
-		waitpid(data.pidcurrent2, 0 , 0);
-		return (0);
+		while(i > 0 )
+		{
+			wait(NULL);
+			i--;
+		}
+		putzfrau(d);
 	}
-
 }
 
+void	handle_pipes(int (*fd1)[2], int (*fd2)[2])
+{
+	int	res1;
+	int	res2;
+
+	res1 = pipe((*fd1));
+	res2 = pipe((*fd2));
+	if (res1 == -1)
+		perror_msg("Pipex pipe: ");
+	if (res2 == -1)
+		perror_msg("Pipex pipe: ");
+}
+
+int	error(char *msg)
+{
+	int size;
+
+	size = ft_strlen(msg);
+	write(2, msg, size);
+	exit(2);
+}
+
+void	perror_msg(char *msg)
+{
+	(void)msg;
+	strerror(errno);
+}

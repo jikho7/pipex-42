@@ -6,13 +6,13 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 22:40:37 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/04/18 21:37:13 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/03 18:31:39 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-size_t	ft_strlen(const char *s)
+int	ft_strlen(const char *s)
 {
 	int	i;
 
@@ -22,17 +22,18 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-char *get_path(char **envp)
+char	*get_path(char **envp)
 {
-	int i = 0;
+	int	i;
 
-	while(envp[i])
+	i = 0;
+	while (envp[i])
 	{
 		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
 			return (envp[i] + 5);
 		i++;
 	}
-	return(NULL);
+	return (NULL);
 }
 
 int	ft_strncmp(const char *s1, const char *s2, size_t n)
@@ -72,4 +73,67 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		result[j++] = cs2[i++];
 	result[j] = '\0';
 	return (result);
+}
+
+void	control_files(char *infile, char *outfile)
+{
+	if (!infile)
+		perror_msg("pipex: no such file or directory");
+	if (!outfile)
+		perror_msg("pipex: no such file or directory");
+}
+
+int	fd_opened(void)
+{
+	int	maxfd;
+	int	count;
+	int	fd;
+
+	count = 0;
+	fd = 0;
+	maxfd = sysconf(_SC_OPEN_MAX);
+	while (fd < maxfd)
+	{
+		if (fcntl(fd, F_GETFD) != -1)
+			count++;
+		fd++;
+	}
+	printf("Nombre de descripteurs de fichiers ouverts : %d\n", count);
+	return (0);
+}
+
+void	putzfrau(t_pipe d)
+{
+	int	i;
+	int	size;
+
+	i = 0;
+	size = 0;
+	close(d.fd_in);
+	close(d.fd_out);
+	while (d.access[size])
+		size++;
+	while (i < size)
+		free(d.access[i++]);
+	free(d.access);
+}
+
+int	close_fd(void)
+{
+	int	maxfd = sysconf(_SC_OPEN_MAX);
+	int	count;
+	int	fd;
+
+	count = 0;
+	fd = 0;
+	while (fd < maxfd)
+	{
+		if (fcntl(fd, F_GETFD) != -1)
+		{
+			close(fd);
+		}
+		fd++;
+	}
+	printf("Nombre de descripteurs de fichiers fermes : %d\n", count);
+	return (0);
 }

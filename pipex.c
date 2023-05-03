@@ -6,66 +6,162 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 22:47:08 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/04/18 22:40:11 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/03 18:31:43 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void child_process_1(t_pipe data)
+void	child_process_0_2(t_pipe d, char *cmd, char *first_arg, char *infile)
 {
-	data.pidcurrent1 = getpid();
-	//int pidp = getppid();
-	char *cmd1_path;
-	int i = 0;
+	char	*cmd_path;
+	int		fork_pid;
+	int		fork_ppid;
+	int		i;
+	int		size;
 
-	//printf("child 1: current: %d, parent: %d\n", data.pidcurrent1, pidp);
-	data.fd_in = open("test.txt", O_RDONLY);		// av[1] = "infile"
-	dup2(data.fd_in, STDIN_FILENO);				// infile, dirige sur stdin
-	dup2(data.fd_pipe[1], STDOUT_FILENO);		// entre du tube, dirige sur stdout
-	close(data.fd_pipe[0]);
-	close(data.fd_in);
-	printf("plop\n");
-	while(data.access[i])
+	i = 0;
+	size = 0;
+	fork_pid = fork();
+	fork_ppid = getppid();
+	cmd_path = NULL;
+	if (fork_pid < 0)
+		perror_msg("pipex fork: ");
+	if (fork_pid == 0 && fork_ppid == d.pid_main)
 	{
-		//cmd = ft_join(mypaths[i], ag[2])
-		cmd1_path = ft_strjoin(data.access[i], data.cmd1);
-		access(cmd1_path, F_OK);
-		//printf("%s\n", cmd1_path); // protect your ft_join
-		execve(cmd1_path, data.cmd_arg1, data.envp);
-		//int execve(const char *pathname, char *const argv[],char *const envp[]);
-		perror("Error Child 1");
-		free(cmd1_path);
-    	//execve(cmd, mycmdargs, envp);
-		//printf("result EXC;%d\n",execve(cmd1_path, data.cmd_arg1, data.envp));
-		i++;
+		d.cmd_arg0 = ft_split(cmd, ' ', 0);
+		cmd_path = get_cmd_path(d.cmd_arg0[0], d);
+		is_cmd_valid(cmd_path, d, 0);
+		if (cmd == first_arg)
+		{
+			d.fd_in = open(infile, O_RDONLY);
+			if (d.fd_in < 0)
+				error("pipex: No such file or directory\n");
+			dup2(d.fd_in, STDIN_FILENO);
+			dup2(d.fd_pipe2[1], STDOUT_FILENO);
+			close(d.fd_pipe2[0]);
+			close(d.fd_pipe1[1]);
+			close(d.fd_pipe1[0]);
+		}
+		else if (cmd == d.last_arg)
+		{
+			d.fd_out = open (d.outfile, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+			if (d.fd_out < 0)
+				error("pipex: No such file or directory\n");
+			dup2(d.fd_pipe1[0], STDIN_FILENO);
+			dup2(d.fd_out, STDOUT_FILENO);
+			close(d.fd_pipe2[0]);
+			close(d.fd_pipe1[1]);
+		}
+		else
+		{
+			dup2(d.fd_pipe1[0], STDIN_FILENO);
+			dup2(d.fd_pipe2[1], STDOUT_FILENO);
+			close(d.fd_pipe2[0]);
+			close(d.fd_pipe1[1]);
+		}
+		execve(cmd_path, d.cmd_arg0, d.envp);
+		perror_msg("pipex execve: ");
+		exit (2);
 	}
+	close(d.fd_pipe1[0]);
+	close(d.fd_pipe1[1]);
+	pipe(d.fd_pipe1);
 }
 
-void child_process_2(t_pipe data, int ac, char **av)
+void	child_process_1_2(t_pipe d, char *cmd, char *last_arg)
 {
-	waitpid(data.pidcurrent1, 0, 0);
-	data.pidcurrent2 = getpid();
-	//int pidp = getppid();
-	char *cmd2_path;
-	int i = 0;
-	//printf("child 2: current: %d, parent: %d\n", data.pidcurrent2, pidp);
+	char	*cmd_path;
+	int		fork_pid = fork();
+	int		fork_ppid = getppid();
+	int		size;
+	int		i;
 
-	data.fd_out = open (av[ac - 1], O_CREAT | O_WRONLY, 0664);	// av[ac - 1] == "outfile"
-
-	dup2(data.fd_out, STDOUT_FILENO);	// outfile, dirige sur stdout
-	dup2(data.fd_pipe[0], STDIN_FILENO);		// sortie du tube, dirige sur stdin
-	close(data.fd_pipe[1]);
-	close(data.fd_out);
-		while(data.access[i])
+	i = 0;
+	size = 0;
+	cmd_path = NULL;
+	if (fork_pid < 0)
+		perror_msg("pipex fork: ");
+	if (fork_pid == 0 && fork_ppid == d.pid_main)
 	{
-		cmd2_path = ft_strjoin(data.access[i], data.cmd2);
-		access(cmd2_path, F_OK);
-		//printf("%s\n", cmd2_path); // protect your ft_join
-    	execve(cmd2_path, data.cmd_arg2, data.envp);
-		perror("Error child 2:\n");
-		free(cmd2_path);
+		d.cmd_arg1 = ft_split(cmd, ' ', 0);
+
+		cmd_path = get_cmd_path(d.cmd_arg1[0], d);
+		is_cmd_valid(cmd_path, d, 1);
+		dup2(d.fd_pipe2[0], STDIN_FILENO);
+		if (cmd == last_arg)
+		{
+			d.fd_out = open (d.outfile, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+			if (d.fd_out < 0)
+				error("pipex: No such file or directory\n");
+			dup2(d.fd_out, STDOUT_FILENO);
+			close(d.fd_pipe1[1]);
+			close(d.fd_pipe2[1]);
+			close(d.fd_pipe1[0]);
+			close(d.fd_pipe2[0]);
+		}
+		else
+		{
+			dup2(d.fd_pipe1[1], STDOUT_FILENO);
+			close(d.fd_pipe2[1]);
+			close(d.fd_pipe1[0]);
+		}
+		execve(cmd_path, d.cmd_arg1, d.envp);
+		perror_msg("pipex execve: ");
+		exit (2);
+	}
+	close(d.fd_pipe2[0]);
+	close(d.fd_pipe2[1]);
+	pipe(d.fd_pipe2);
+}
+
+char	*get_cmd_path(char *cmd, t_pipe d)
+{
+	int		i;
+	char	*cmd_path;
+
+	i = 0;
+	while (d.access[i])
+	{
+		cmd_path = ft_strjoin(d.access[i], cmd);
+		if (access (cmd_path, F_OK) == 0)
+			return (cmd_path);
+		else
 		i++;
 	}
-	//execve(data.path, );
+	return (NULL);
+}
+
+int is_cmd_valid(char *cmd_path, t_pipe d, int process)
+{
+	int i;
+	int size;
+
+	i = 0;
+	size = 0;
+	if (access(cmd_path, F_OK) == -1)
+	{
+		if (process == 0)
+		{
+			while (d.cmd_arg0[0][i])
+			{
+				size++;
+				i++;
+			}
+			write(2, "pipex: command not found: ", 26);
+			write(2, d.cmd_arg0[0], size);
+		}
+		if (process == 1)
+		{
+			while (d.cmd_arg1[0][i])
+			{
+				size++;
+				i++;
+			}
+			write(2, "pipex: command not found: ", 26);
+			write(2, d.cmd_arg1[0], size);
+		}
+		exit (2);
+	}
+	return (0);
 }

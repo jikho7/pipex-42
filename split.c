@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 22:40:14 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/04/18 21:50:45 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/04/25 18:14:15 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 
 static int		delete_word(char **str, int size);
 static int		count_words(const char *str, char sign);
-static void		write_word(char *dest, const char *from, char sign);
-static int		write_split(char **split, const char *str, char sign);
-
+static void		write_word(char *dest, const char *from, char sign, int var);
+static int		write_split(char **split, const char *str, char sign, int var);
 
 static int	delete_word(char **str, int size)
 {
@@ -44,7 +43,7 @@ static int	count_words(const char *str, char sign)
 	return (count);
 }
 
-static void	write_word(char *dest, const char *word_begin, char sign)
+static void	write_word(char *dest, const char *word_begin, char sign, int var)
 {
 	int	i;
 
@@ -54,11 +53,14 @@ static void	write_word(char *dest, const char *word_begin, char sign)
 		dest[i] = word_begin[i];
 		i++;
 	}
-	dest[i++] = '/';
+	if (var == 1)
+	{
+		dest[i++] = '/';
+	}
 	dest[i] = '\0';
 }
 
-static int	write_split(char **tab_split, const char *str, char sign)
+static int	write_split(char **tab_split, const char *str, char sign, int var)
 {
 	int		i;
 	int		j;
@@ -78,7 +80,7 @@ static int	write_split(char **tab_split, const char *str, char sign)
 			tab_split [word] = (char *)malloc(sizeof(char) * (j + 1));
 			if (tab_split[word] == NULL)
 				return (delete_word(tab_split, word - 1));
-			write_word(tab_split[word], &str[i], sign);
+			write_word(tab_split[word], &str[i], sign, var);
 			i = i + j;
 			word++;
 		}
@@ -86,7 +88,7 @@ static int	write_split(char **tab_split, const char *str, char sign)
 	return (0);
 }
 
-char	**ft_split(const char *str, char c)
+char	**ft_split(const char *str, char c, int var)
 {
 	char	**tab_result;
 	int		words;
@@ -96,6 +98,6 @@ char	**ft_split(const char *str, char c)
 	if (tab_result == NULL)
 		return (NULL);
 	tab_result[words] = 0;
-	write_split(tab_result, str, c);
+	write_split(tab_result, str, c, var);
 	return (tab_result);
 }
