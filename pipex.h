@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 21:08:51 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/05 18:25:27 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/05 21:11:15 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,4 +65,6 @@ void	command_not_found(char *cmd);
 void	ft_putstr_fd(char *s, int fd);
 void	error_msg(char *file_name);
 void	free_double_tab(char **tab, int size);
+void	close_pipes(t_pipe d, int process);
+void	handle_dup_err(int fd_f, int fd_p, char **tab_cmd, char *path_cmd);
 #endif

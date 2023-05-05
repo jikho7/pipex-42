@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 22:40:37 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/05 18:26:01 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/05 21:03:29 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,9 +96,27 @@ int	control_files(char *infile, char *outfile)
 		error_msg(outfile);
 		exit(EXIT_FAILURE);
 	}
+	close(in);
+	close(out);
 	return(0);
 }
 
+void	putzfrau(t_pipe d)
+{
+	int	i;
+	int	size;
+
+	i = 0;
+	size = 0;
+	close(d.fd_in);
+	close(d.fd_out);
+	while (d.access[size])
+		size++;
+	while (i < size)
+		free(d.access[i++]);
+	free(d.access);
+}
+/*
 int	fd_opened(void)
 {
 	int	maxfd;
@@ -116,22 +134,6 @@ int	fd_opened(void)
 	}
 	printf("Nombre de descripteurs de fichiers ouverts : %d\n", count);
 	return (0);
-}
-
-void	putzfrau(t_pipe d)
-{
-	int	i;
-	int	size;
-
-	i = 0;
-	size = 0;
-	close(d.fd_in);
-	close(d.fd_out);
-	while (d.access[size])
-		size++;
-	while (i < size)
-		free(d.access[i++]);
-	free(d.access);
 }
 
 int	close_fd(void)
@@ -153,3 +155,4 @@ int	close_fd(void)
 	printf("Nombre de descripteurs de fichiers fermes : %d\n", count);
 	return (0);
 }
+*/
