@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 21:08:51 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/03 18:31:42 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/05 14:24:32 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ char	*ft_strjoin(char const *s1, char const *s2);
 
 void	handle_pipes(int (*fd1)[2], int (*fd2)[2]);
 char	*get_cmd_path(char *cmd, t_pipe d);
-void	control_files(char *infile, char *outfile);
+int		control_files(char *infile, char *outfile);
 void	child_process_0_2(t_pipe d, char *av, char *first_arg, char *infile);
 void	child_process_1_2(t_pipe d, char *av, char *last_arg);
 void	write_outfile(t_pipe d);

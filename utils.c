@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 22:40:37 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/03 18:31:39 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/05 14:56:11 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,12 +75,28 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (result);
 }
 
-void	control_files(char *infile, char *outfile)
+int	control_files(char *infile, char *outfile)
 {
-	if (!infile)
+	int in;
+	int out;
+
+	in = open(infile, F_OK);
+	out = open(outfile, F_OK);
+	if (in == -1)
+	{
+		close(in);
 		perror_msg("pipex: no such file or directory");
-	if (!outfile)
+		//exit(errno);
+	}
+	if (out == -1)
+	{
+		close(out);
 		perror_msg("pipex: no such file or directory");
+	//	exit(errno);
+	}
+	close(in);
+	close(out);
+	return(0);
 }
 
 int	fd_opened(void)

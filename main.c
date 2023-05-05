@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 21:08:46 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/03 18:31:36 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/05 14:17:50 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	main(int ac, char **av, char **envp)
 		error("pipex: Arguement missing\n");
 	if (ac > 4)
 	{
-		control_files(av[0], av[ac - 1]);
+		control_files(av[1], av[ac - 1]);
 		handle_pipes(&d.fd_pipe1, &d.fd_pipe2);
 		while (i < ac - 3)
 		{
@@ -77,4 +77,5 @@ void	perror_msg(char *msg)
 {
 	(void)msg;
 	strerror(errno);
+	//exit(2);
 }
