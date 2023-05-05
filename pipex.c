@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 22:47:08 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/05 21:11:53 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/05 21:52:15 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ void	child_process_0_2(t_pipe d, char *cmd, char *first_arg, char *infile)
 	fork_pid = fork();
 	fork_ppid = getppid();
 	cmd_path = NULL;
-	if (fork_pid < 0)
-		perror_msg("pipex fork: ");
+	if (fork_pid == -1)
+		perror_msg();
 	if (fork_pid == 0 && fork_ppid == d.pid_main)
 	{
 		d.cmd_arg0 = ft_split(cmd, ' ', 0);
@@ -40,10 +40,9 @@ void	child_process_0_2(t_pipe d, char *cmd, char *first_arg, char *infile)
 				close(d.fd_in);
 				error_msg(infile);
 				exit(EXIT_FAILURE);
-				//error("pipex: No such file or directory\n");
 			}
 			if(dup2(d.fd_in, STDIN_FILENO) == -1 || dup2(d.fd_pipe2[1], STDOUT_FILENO) == -1)
-			 	handle_dup_err(d.fd_in, d.fd_pipe2[1], d.cmd_arg0, cmd_path);
+			 	handle_dup_err(d.fd_in, d.fd_pipe2[1], d.cmd_arg0, cmd_path, 0);
 			close_pipes(d, 0);
 			close(d.fd_in);
 			//close(d.fd_pipe2[1]); // test
@@ -56,25 +55,25 @@ void	child_process_0_2(t_pipe d, char *cmd, char *first_arg, char *infile)
 				close(d.fd_out);
 				error_msg(d.outfile);
 				exit(EXIT_FAILURE);
-				//error("pipex: No such file or directory\n");
 			}
-			dup2(d.fd_pipe1[0], STDIN_FILENO);
-			dup2(d.fd_out, STDOUT_FILENO);
+			if(dup2(d.fd_pipe1[0], STDIN_FILENO) == 1 || dup2(d.fd_out, STDOUT_FILENO) == - 1)
+				handle_dup_err(d.fd_out, d.fd_pipe1[0], d.cmd_arg0, cmd_path, 0);
 			close_pipes(d, 0);
 			// test
 			close(d.fd_out);
 			//close(d.fd_pipe2[1]); // test
-
 		}
 		else
 		{
-			dup2(d.fd_pipe1[0], STDIN_FILENO);
-			dup2(d.fd_pipe2[1], STDOUT_FILENO);
+			if (dup2(d.fd_pipe1[0], STDIN_FILENO) == -1)
+				handle_dup_err(0, d.fd_pipe1[0], d.cmd_arg0, cmd_path, 1);
+			if (dup2(d.fd_pipe2[1], STDOUT_FILENO) == -1)
+				handle_dup_err(1, d.fd_pipe2[1], d.cmd_arg0, cmd_path, 1);
 			close_pipes(d, 0);
 		}
-		execve(cmd_path, d.cmd_arg0, d.envp);
+		if(execve(cmd_path, d.cmd_arg0, d.envp) == -1)
+			handle_exec_err(d.fd_pipe2[1], d.cmd_arg0, cmd_path);
 		// test close(d.fd_pipe2[1]);
-		perror_msg("pipex execve: ");
 	}
 	close(d.fd_pipe1[0]);
 	close(d.fd_pipe1[1]);
@@ -92,14 +91,15 @@ void	child_process_1_2(t_pipe d, char *cmd, char *last_arg)
 	i = 0;
 	size = 0;
 	cmd_path = NULL;
-	if (fork_pid < 0)
-		perror_msg("pipex fork: ");
+	if (fork_pid == -1)
+		perror_msg();
 	if (fork_pid == 0 && fork_ppid == d.pid_main)
 	{
 		d.cmd_arg1 = ft_split(cmd, ' ', 0);
 		cmd_path = get_cmd_path(d.cmd_arg1[0], d);
 		is_cmd_valid(cmd_path, d, 1);
-		dup2(d.fd_pipe2[0], STDIN_FILENO);
+		if(dup2(d.fd_pipe2[0], STDIN_FILENO) == -1)
+			handle_dup_err(0, d.fd_pipe2[0], d.cmd_arg1, cmd_path, 1);
 		if (cmd == last_arg)
 		{
 			d.fd_out = open (d.outfile, O_CREAT | O_WRONLY | O_TRUNC, 0644);
@@ -108,20 +108,20 @@ void	child_process_1_2(t_pipe d, char *cmd, char *last_arg)
 				close(d.fd_out);
 				error_msg(d.outfile);
 				exit(EXIT_FAILURE);
-				//error("pipex: No such file or directory\n");
 			}
-			dup2(d.fd_out, STDOUT_FILENO);
+			if(dup2(d.fd_out, STDOUT_FILENO) == -1)
+				handle_dup_err(d.fd_out, d.fd_pipe2[0], d.cmd_arg1, cmd_path, 0);
 			close_pipes(d, 1);
 			close(d.fd_out);
 		}
 		else
 		{
 			dup2(d.fd_pipe1[1], STDOUT_FILENO);
+				handle_dup_err(1, d.fd_pipe1[1], d.cmd_arg1, cmd_path, 1);
 			close_pipes(d, 1);
 		}
-		execve(cmd_path, d.cmd_arg1, d.envp);
-		perror_msg("pipex execve: ");
-		exit (2);
+		if(execve(cmd_path, d.cmd_arg1, d.envp) == -1)
+			handle_exec_err(d.fd_pipe1[1], d.cmd_arg1, cmd_path);
 	}
 	close(d.fd_pipe2[0]);
 	close(d.fd_pipe2[1]);
@@ -218,9 +218,7 @@ void	free_double_tab(char **tab, int size)
 
 	i = 0;
 	while(tab[i])
-	{
 		i++;
-	}
 	sizee = i;
 	i = 0;
 	while (i < sizee)
@@ -248,13 +246,19 @@ void close_pipes(t_pipe d, int process)
 	}
 }
 
-//handle_dup_err(d.fd_in, d.fd_pipe2[1], d.cmd_arg0, cmd_path);
-void	handle_dup_err(int fd_f, int fd_p, char **tab_cmd, char *path_cmd)
+void	handle_dup_err(int fd_f, int fd_p, char **tab_cmd, char *path_cmd, int position)
 {
 	free(path_cmd);
 	free_double_tab(tab_cmd, 1);
-	close(fd_f);
-	close(fd_p);
+	if (position == 0)
+	{
+		close(fd_f);
+		close(fd_p);
+	}
+	if (position == 1)
+	{
+		close(fd_p);
+	}
 	perror("pipex");
 	exit(EXIT_FAILURE);
 }

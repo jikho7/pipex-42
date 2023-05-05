@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 21:08:51 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/05 21:11:15 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/05 22:15:59 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 
 typedef struct s_pipe
 {
+	int		i;
+	int		j;
 	int		fd_pipe1[2];
 	int		fd_pipe2[2];
 	int		pid_main;
@@ -58,7 +60,7 @@ int		fd_opened(void);
 void	putzfrau(t_pipe d);
 int		close_fd(void);
 int		error(char *msg);
-void	perror_msg(char *msg);
+void	perror_msg(void);
 int		is_cmd_valid(char *cmd_path, t_pipe d, int process);
 
 void	command_not_found(char *cmd);
@@ -66,5 +68,6 @@ void	ft_putstr_fd(char *s, int fd);
 void	error_msg(char *file_name);
 void	free_double_tab(char **tab, int size);
 void	close_pipes(t_pipe d, int process);
-void	handle_dup_err(int fd_f, int fd_p, char **tab_cmd, char *path_cmd);
+void	handle_dup_err(int fd_f, int fd_p, char **tab_cmd, char *path_cmd, int position);
+void	handle_exec_err(int fd_p, char **tab_cmd, char *path_cmd);
 #endif
