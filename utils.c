@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 22:40:37 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/05 14:56:11 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/05 18:26:01 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,23 +79,23 @@ int	control_files(char *infile, char *outfile)
 {
 	int in;
 	int out;
+	const char* s;
 
+	s = (const char*)infile;
 	in = open(infile, F_OK);
 	out = open(outfile, F_OK);
-	if (in == -1)
+	if (open(infile, O_RDONLY, 0644) == -1)
 	{
 		close(in);
-		perror_msg("pipex: no such file or directory");
-		//exit(errno);
+		error_msg(infile);
+		exit(EXIT_FAILURE);
 	}
-	if (out == -1)
+	if (open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644) == -1)
 	{
 		close(out);
-		perror_msg("pipex: no such file or directory");
-	//	exit(errno);
+		error_msg(outfile);
+		exit(EXIT_FAILURE);
 	}
-	close(in);
-	close(out);
 	return(0);
 }
 
