@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 22:40:37 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/05 21:50:38 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/05 23:14:41 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	while (cs2[i])
 		result[j++] = cs2[i++];
 	result[j] = '\0';
+	//free(cs1);
+	//free(cs2);
 	return (result);
 }
 
@@ -79,9 +81,7 @@ int	control_files(char *infile, char *outfile)
 {
 	int in;
 	int out;
-	const char* s;
 
-	s = (const char*)infile;
 	in = open(infile, F_OK);
 	out = open(outfile, F_OK);
 	if (open(infile, O_RDONLY, 0644) == -1)
@@ -116,7 +116,7 @@ void	putzfrau(t_pipe d)
 		free(d.access[i++]);
 	free(d.access);
 }
-/*
+
 int	fd_opened(void)
 {
 	int	maxfd;
@@ -155,4 +155,4 @@ int	close_fd(void)
 	printf("Nombre de descripteurs de fichiers fermes : %d\n", count);
 	return (0);
 }
-*/
+

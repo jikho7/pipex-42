@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 21:08:51 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/05 22:15:59 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/05 23:49:18 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ typedef struct s_pipe
 	char	*cmd1;
 	char	*cmd2;
 	char	**envp;
+	char	*infile;
 	char	*outfile;
 }t_pipe;
 
@@ -53,13 +54,12 @@ char	*ft_strjoin(char const *s1, char const *s2);
 void	handle_pipes(int (*fd1)[2], int (*fd2)[2]);
 char	*get_cmd_path(char *cmd, t_pipe d);
 int		control_files(char *infile, char *outfile);
-void	child_process_0_2(t_pipe d, char *av, char *first_arg, char *infile);
+void	child_process_0_2(t_pipe d, char *av, char *first_arg);
 void	child_process_1_2(t_pipe d, char *av, char *last_arg);
 void	write_outfile(t_pipe d);
 int		fd_opened(void);
 void	putzfrau(t_pipe d);
 int		close_fd(void);
-int		error(char *msg);
 void	perror_msg(void);
 int		is_cmd_valid(char *cmd_path, t_pipe d, int process);
 
