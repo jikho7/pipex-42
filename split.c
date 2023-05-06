@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 22:40:14 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/06 12:51:39 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/06 17:02:45 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ static int	count_words(const char *str, char sign)
 static void	write_word(char *dest, const char *word_begin, char sign, int var)
 {
 	int	i;
+	//(void)var;
 
 	i = 0;
 	while (word_begin[i] != sign && word_begin[i] != '\0')

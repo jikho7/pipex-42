@@ -1,0 +1,3 @@
+[2] Use perror("Error") to debug, especially right after fork() or execve(), to see what is going on in the pipe.
+Inside the pipe, everything done goes to one of its ends. printf for ex. wont print to the terminal or it will
+print to your outfile (because we swapped the stdout); perror("Error") will work because it prints to stderr.

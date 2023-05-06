@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 13:08:41 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/06 14:59:19 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/06 18:12:34 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	free_double_tab(char **tab)
 		i++;
 	size = i;
 	i = 0;
-	while (i < size)
+	while (i <= size)
 	{
 		free(tab[i]);
 		i++;
@@ -30,18 +30,18 @@ void	free_double_tab(char **tab)
 	free(tab);
 }
 
-void	putzfrau(t_pipe d)
+void	putzfrau(t_pipe *d)
 {
 	int	i;
 	int	size;
 
 	i = 0;
 	size = 0;
-	close(d.fd_in);
-	close(d.fd_out);
-	while (d.access[size])
+	close(d->fd_in);
+	close(d->fd_out);
+	while (d->access[size])
 		size++;
 	while (i < size)
-		free(d.access[i++]);
-	free(d.access);
+		free(d->access[i++]);
+	free(d->access);
 }

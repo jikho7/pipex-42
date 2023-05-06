@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 13:00:28 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/06 15:14:26 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/06 13:12:51 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,13 @@ void	handle_dup_err(int fd_f, int fd_p, char **tab_cmd, char *path_cmd, int posi
 	free_double_tab(tab_cmd);
 	if (position == 0)
 	{
+		fprintf(stderr, "check 0\n");
 		close(fd_f);
 		close(fd_p);
 	}
 	if (position == 1)
 	{
+		fprintf(stderr, "check 1\n");
 		close(fd_p);
 	}
 	perror("pipexA");
@@ -33,6 +35,7 @@ void	handle_dup_err_middle(int fd_p, char **tab_cmd, char *path_cmd)
 {
 	free(path_cmd);
 	free_double_tab(tab_cmd);
+	fprintf(stderr, "check 1\n");
 	close(fd_p);
 	perror("pipexAmiddle");
 	exit(EXIT_FAILURE);
@@ -75,5 +78,4 @@ void	error_msg(char *file_name)
 	ft_putstr_fd(tmp, 2);
 	ft_putstr_fd("\n", 2);
 	free(tmp);
-	//free(msg_sys); // ajout inutile
 }
