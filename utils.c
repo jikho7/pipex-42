@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 22:40:37 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/06 13:11:56 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/06 21:15:18 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	while (cs2[i])
 		result[j++] = cs2[i++];
 	result[j] = '\0';
-	//free(cs1);
-	//free(cs2);
 	return (result);
 }
 

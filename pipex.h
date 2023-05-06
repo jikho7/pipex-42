@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 21:08:51 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/06 18:07:06 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/06 20:37:27 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ typedef struct s_pipe
 	int		fd_in;
 	int		fd_out;
 	char	*path;
-	char	**access;
+	char	**access_tab;
 	char	*last_arg;
 	char	*first_arg;
 	char	**cmd_arg;

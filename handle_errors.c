@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 13:00:28 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/06 13:12:51 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/06 21:14:22 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,14 @@ void	handle_dup_err(int fd_f, int fd_p, char **tab_cmd, char *path_cmd, int posi
 	free_double_tab(tab_cmd);
 	if (position == 0)
 	{
-		fprintf(stderr, "check 0\n");
 		close(fd_f);
 		close(fd_p);
 	}
 	if (position == 1)
 	{
-		fprintf(stderr, "check 1\n");
 		close(fd_p);
 	}
-	perror("pipexA");
+	perror("pipex");
 	exit(EXIT_FAILURE);
 }
 
@@ -35,9 +33,8 @@ void	handle_dup_err_middle(int fd_p, char **tab_cmd, char *path_cmd)
 {
 	free(path_cmd);
 	free_double_tab(tab_cmd);
-	fprintf(stderr, "check 1\n");
 	close(fd_p);
-	perror("pipexAmiddle");
+	perror("pipex");
 	exit(EXIT_FAILURE);
 }
 
@@ -46,7 +43,7 @@ void	handle_exec_err(int fd_p, char **tab_cmd, char *path_cmd)
 	free(path_cmd);
 	free_double_tab(tab_cmd);
 	close(fd_p);
-	perror("pipexB");
+	perror("pipex");
 	exit(EXIT_FAILURE);
 }
 
@@ -69,7 +66,7 @@ void	error_msg(char *file_name)
 	char	*tmp;
 
 	msg_sys = strerror(errno);
-	tmp = ft_strjoin("pipexL: ", msg_sys);
+	tmp = ft_strjoin("pipex: ", msg_sys);
 	msg_err = ft_strjoin(tmp, ": ");
 	free(tmp);
 	tmp = NULL;

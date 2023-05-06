@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 13:06:55 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/06 18:08:36 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/06 21:13:36 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@ char	*get_cmd_path(char *cmd, t_pipe *d)
 	char	*cmd_path;
 
 	i = 0;
-	while (d->access[i])
+	while (d->access_tab[i])
 	{
-		cmd_path = ft_strjoin(d->access[i], cmd);
+		cmd_path = ft_strjoin(d->access_tab[i], cmd);
 		if (access (cmd_path, F_OK) == 0)
 			return (cmd_path);
 		else
@@ -49,17 +49,15 @@ int is_cmd_valid(char *cmd_path, t_pipe *d, int process)
 	{
 		if (process == 0)
 		{
-			command_not_found(*d->cmd_arg);
-			free_double_tab(d->cmd_arg);
+			command_not_found(*d->cmd_arg0);
 			close(d->fd_pipe2[1]);
 		}
 		if (process == 1)
 		{
-			command_not_found(*d->cmd_arg);
-			free_double_tab(d->cmd_arg);
+			command_not_found(*d->cmd_arg1);
 			close(d->fd_pipe2[0]);
 		}
-		return(1);
+		exit(EXIT_FAILURE);
 	}
 	return (0);
 }

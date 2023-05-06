@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 21:08:46 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/06 18:16:02 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/06 21:08:50 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,8 @@ void	ft_free_t_pipe(t_pipe *d);
 
 void	ft_free_t_pipe(t_pipe *d)
 {
-	if (d->access)
-		free_double_tab(d->access);
-	if (d->cmd_arg == NULL)
-		free(d->cmd_arg);
+	if (d->access_tab)
+		free_double_tab(d->access_tab);
 	if(d->envp)
 		free_double_tab(d->envp);
 	if(d->path)
@@ -65,9 +63,6 @@ int	main(int ac, char **av, char **envp)
 	}
 	while(d.i-- > 0 )
 		wait(NULL);
-	//putzfrau(&d);
-	ft_free_t_pipe(&d);
-	fd_opened();
 	return (0);
 }
 
