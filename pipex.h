@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 21:08:51 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/05 23:49:18 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/06 13:14:01 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,9 @@ typedef struct s_pipe
 	char	*outfile;
 }t_pipe;
 
+void	perror_msg2(char *msg);
+void	init(t_pipe *d, int ac, char **av, char **env);
+
 int		ft_strlen(const char *s);
 char	**ft_split(const char *str, char c, int var);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
@@ -66,8 +69,13 @@ int		is_cmd_valid(char *cmd_path, t_pipe d, int process);
 void	command_not_found(char *cmd);
 void	ft_putstr_fd(char *s, int fd);
 void	error_msg(char *file_name);
-void	free_double_tab(char **tab, int size);
+void	free_double_tab(char **tab);
 void	close_pipes(t_pipe d, int process);
 void	handle_dup_err(int fd_f, int fd_p, char **tab_cmd, char *path_cmd, int position);
 void	handle_exec_err(int fd_p, char **tab_cmd, char *path_cmd);
+
+void	handle_dup_err_middle(int fd_p, char **tab_cmd, char *path_cmd);
+void	first_cmd(t_pipe d, char *cmd_path);
+void	last_cmd(t_pipe d, char *cmd_path, int process);
+void	middle_cmd(t_pipe d, char *cmd_path, int process);
 #endif

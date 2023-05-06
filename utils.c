@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 22:40:37 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/05 23:14:41 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/06 13:11:56 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,6 @@ int	ft_strlen(const char *s)
 	while (s[i] != '\0')
 		i++;
 	return (i);
-}
-
-char	*get_path(char **envp)
-{
-	int	i;
-
-	i = 0;
-	while (envp[i])
-	{
-		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
-			return (envp[i] + 5);
-		i++;
-	}
-	return (NULL);
 }
 
 int	ft_strncmp(const char *s1, const char *s2, size_t n)
@@ -75,46 +61,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	//free(cs1);
 	//free(cs2);
 	return (result);
-}
-
-int	control_files(char *infile, char *outfile)
-{
-	int in;
-	int out;
-
-	in = open(infile, F_OK);
-	out = open(outfile, F_OK);
-	if (open(infile, O_RDONLY, 0644) == -1)
-	{
-		close(in);
-		error_msg(infile);
-		exit(EXIT_FAILURE);
-	}
-	if (open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644) == -1)
-	{
-		close(out);
-		error_msg(outfile);
-		exit(EXIT_FAILURE);
-	}
-	close(in);
-	close(out);
-	return(0);
-}
-
-void	putzfrau(t_pipe d)
-{
-	int	i;
-	int	size;
-
-	i = 0;
-	size = 0;
-	close(d.fd_in);
-	close(d.fd_out);
-	while (d.access[size])
-		size++;
-	while (i < size)
-		free(d.access[i++]);
-	free(d.access);
 }
 
 int	fd_opened(void)
