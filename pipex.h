@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 21:08:51 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/06 20:37:27 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/06 23:27:15 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,11 +70,12 @@ void	ft_putstr_fd(char *s, int fd);
 void	error_msg(char *file_name);
 void	free_double_tab(char **tab);
 void	close_pipes(t_pipe *d, int process);
-void	handle_dup_err(int fd_f, int fd_p, char **tab_cmd, char *path_cmd, int position);
+void	handle_dup_err(int fd_f, int fd_p, char **tab_cmd, int position);
 void	handle_exec_err(int fd_p, char **tab_cmd, char *path_cmd);
 
 void	handle_dup_err_middle(int fd_p, char **tab_cmd, char *path_cmd);
 void	first_cmd(t_pipe *d, char *cmd_path);
 void	last_cmd(t_pipe *d, char *cmd_path, int process);
 void	middle_cmd(t_pipe *d, char *cmd_path, int process);
+void	handle_dup_err2(int fd_f, t_pipe d, char *path_cmd, int position);
 #endif

@@ -6,7 +6,7 @@
 #    By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/17 22:32:36 by jdefayes          #+#    #+#              #
-#    Updated: 2023/05/06 13:09:45 by jdefayes         ###   ########.fr        #
+#    Updated: 2023/05/06 23:02:42 by jdefayes         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,23 +16,35 @@ NAME	= pipex
 
 ##########################################
 ##SOURCES
-SRC	=	main.c\
-		pipex.c\
-		utils.c\
-		split.c\
-		handle_errors.c\
-		init.c\
-		handle_process.c\
-		handle_leaks.c\
+SRC			=	main.c\
+				pipex.c\
+				utils.c\
+				split.c\
+				handle_errors.c\
+				init.c\
+				handle_process.c\
+				handle_leaks.c\
 
-FLAGS	= -Wall -Werror -Wextra -g
-CC		= gcc
-OBJ	= ${SRC:.c=.o}
-RM		= rm -f
+BONUS		=	pipex_bonus.c\
+				utils_bonus.c\
+				split_bonus.c\
+				handle_errors_bonus.c\
+				init_bonus.c\
+				handle_process_bonus.c\
+				handle_leaks_bonus.c\
+
+FLAGS		= -Wall -Werror -Wextra -g
+CC			= gcc
+OBJ			= ${SRC:.c=.o}
+BONUS_OBJ	= ${BONUS:.c=.o}
+RM			= rm -f
 
 ##########################################
 ##RULES
 all: $(NAME)
+
+#bonus: $(BONUS_OBJ) $(OBJS)
+#	ar rcs $(NAME) $(OBJS) $(BONUS_OBJ)
 
 .c.o:
 	$(CC) $(FLAGS) -c $< -o $(<:.c=.o)

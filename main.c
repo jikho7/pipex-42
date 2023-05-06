@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 21:08:46 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/06 21:08:50 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/06 23:07:11 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,23 +18,23 @@ void	ft_free_t_pipe(t_pipe *d)
 {
 	if (d->access_tab)
 		free_double_tab(d->access_tab);
-	if(d->envp)
+	if (d->envp)
 		free_double_tab(d->envp);
-	if(d->path)
+	if (d->path)
 		free(d->path);
-	if(d->last_arg)
+	if (d->last_arg)
 		free(d->last_arg);
-	if(d->first_arg)
+	if (d->first_arg)
 		free(d->first_arg);
-	if(d->infile)
+	if (d->infile)
 		free(d->infile);
-	if(d->outfile)
+	if (d->outfile)
 		free(d->outfile);
-	if(d->cmd_arg)
+	if (d->cmd_arg)
 		free_double_tab(d->cmd_arg);
-	if(d->cmd_arg0)
+	if (d->cmd_arg0)
 		free_double_tab(d->cmd_arg0);
-	if(d->cmd_arg1)
+	if (d->cmd_arg1)
 		free_double_tab(d->cmd_arg1);
 }
 
@@ -42,8 +42,7 @@ int	main(int ac, char **av, char **envp)
 {
 	t_pipe	d;
 
-	d = (t_pipe) {0};
-	//ft_free_t_pipe(&d);
+	d = (t_pipe){0};
 	init_struc_pipe(&d, ac, av, envp);
 	if (ac <= 4)
 	{
@@ -61,8 +60,7 @@ int	main(int ac, char **av, char **envp)
 		d.j++;
 		d.i++;
 	}
-	while(d.i-- > 0 )
+	while (d.i-- > 0)
 		wait(NULL);
 	return (0);
 }
-

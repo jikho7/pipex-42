@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   pipex_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 22:47:08 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/06 23:30:08 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/06 23:12:13 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	child_process_0_2(t_pipe *d, char *cmd, char *first_arg)
 			last_cmd(d, cmd_path, 0);
 		else
 			middle_cmd(d, cmd_path, 0);
-		if (execve (cmd_path, d->cmd_arg0, d->envp) == -1)
+		if (execve(cmd_path, d->cmd_arg0, d->envp) == -1)
 			handle_exec_err(d->fd_pipe2[1], d->cmd_arg0, cmd_path);
 	}
 	close_pipes(d, 3);
@@ -58,7 +58,7 @@ void	child_process_1_2(t_pipe *d, char *cmd, char *last_arg)
 		cmd_path = get_cmd_path(d->cmd_arg1[0], d);
 		is_cmd_valid(cmd_path, d, 1);
 		if (dup2 (d->fd_pipe2[0], STDIN_FILENO) == -1)
-			handle_dup_err(0, d->fd_pipe2[0], d->cmd_arg1, 1);
+			handle_dup_err(0, d->fd_pipe2[0], d->cmd_arg1, cmd_path, 1);
 		if (cmd == last_arg)
 			last_cmd(d, cmd_path, 1);
 		else
@@ -72,7 +72,6 @@ void	child_process_1_2(t_pipe *d, char *cmd, char *last_arg)
 
 void	first_cmd(t_pipe *d, char *cmd_path)
 {
-	(void)cmd_path;
 	d->fd_in = open(d->infile, O_RDONLY);
 	if (d->fd_in < 0)
 	{
@@ -82,14 +81,13 @@ void	first_cmd(t_pipe *d, char *cmd_path)
 	}
 	if (dup2(d->fd_in, STDIN_FILENO) == -1
 		|| dup2(d->fd_pipe2[1], STDOUT_FILENO) == -1)
-		handle_dup_err(d->fd_in, d->fd_pipe2[1], d->cmd_arg0, 0);
+		handle_dup_err(d->fd_in, d->fd_pipe2[1], d->cmd_arg0, cmd_path, 0);
 	close_pipes(d, 2);
 	close(d->fd_in);
 }
 
 void	last_cmd(t_pipe *d, char *cmd_path, int process)
 {
-	(void)cmd_path;
 	d->fd_out = open (d->outfile, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (d->fd_out < 0)
 	{
@@ -99,15 +97,15 @@ void	last_cmd(t_pipe *d, char *cmd_path, int process)
 	}
 	if (process == 0)
 	{
-		if (dup2 (d->fd_pipe1[0], STDIN_FILENO) == 1
-			|| dup2 (d->fd_out, STDOUT_FILENO) == -1)
-			handle_dup_err(d->fd_out, d->fd_pipe1[0], d->cmd_arg0, 0);
+		if (dup2(d->fd_pipe1[0], STDIN_FILENO) == 1
+			|| dup2(d->fd_out, STDOUT_FILENO) == -1)
+			handle_dup_err(d->fd_out, d->fd_pipe1[0], d->cmd_arg0, cmd_path, 0);
 		close_pipes(d, 2);
 	}
 	if (process == 1)
 	{
-		if (dup2 (d->fd_out, STDOUT_FILENO) == -1)
-			handle_dup_err(d->fd_out, d->fd_pipe2[0], d->cmd_arg1, 0);
+		if (dup2(d->fd_out, STDOUT_FILENO) == -1)
+			handle_dup_err(d->fd_out, d->fd_pipe2[0], d->cmd_arg1, cmd_path, 0);
 		close_pipes(d, 1);
 	}
 	close(d->fd_out);
@@ -115,19 +113,18 @@ void	last_cmd(t_pipe *d, char *cmd_path, int process)
 
 void	middle_cmd(t_pipe *d, char *cmd_path, int process)
 {
-	(void)cmd_path;
 	if (process == 0)
 	{
 		if (dup2(d->fd_pipe1[0], STDIN_FILENO) == -1)
-			handle_dup_err(0, d->fd_pipe1[0], d->cmd_arg0, 1);
+			handle_dup_err(0, d->fd_pipe1[0], d->cmd_arg0, cmd_path, 1);
 		if (dup2(d->fd_pipe2[1], STDOUT_FILENO) == -1)
-			handle_dup_err(1, d->fd_pipe2[1], d->cmd_arg0, 1);
+			handle_dup_err(1, d->fd_pipe2[1], d->cmd_arg0, cmd_path, 1);
 		close_pipes(d, 2);
 	}
 	if (process == 1)
 	{
 		if (dup2(d->fd_pipe1[1], STDOUT_FILENO) == -1)
-			handle_dup_err(1, d->fd_pipe1[1], d->cmd_arg1, 1);
+			handle_dup_err(1, d->fd_pipe1[1], d->cmd_arg1, cmd_path, 1);
 		close_pipes(d, 1);
 	}
 }
