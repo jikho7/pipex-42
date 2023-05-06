@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 21:08:51 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/06 13:14:01 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/06 16:02:21 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,10 @@ typedef struct s_pipe
 	int		fd_out;
 	char	*path;
 	char	**access;
-	char	*last_arg;
-	char	*first_arg;
-	char	**cmd_arg;
+	char	*last_cmd;
+	char	*first_cmd;
 	char	**cmd_arg0;
 	char	**cmd_arg1;
-	char	*cmd1;
-	char	*cmd2;
 	char	**envp;
 	char	*infile;
 	char	*outfile;
@@ -57,8 +54,8 @@ char	*ft_strjoin(char const *s1, char const *s2);
 void	handle_pipes(int (*fd1)[2], int (*fd2)[2]);
 char	*get_cmd_path(char *cmd, t_pipe d);
 int		control_files(char *infile, char *outfile);
-void	child_process_0_2(t_pipe d, char *av, char *first_arg);
-void	child_process_1_2(t_pipe d, char *av, char *last_arg);
+void	child_process_0_2(t_pipe d, char *av, char *first_cmd);
+void	child_process_1_2(t_pipe d, char *av, char *last_cmd);
 void	write_outfile(t_pipe d);
 int		fd_opened(void);
 void	putzfrau(t_pipe d);
@@ -75,7 +72,7 @@ void	handle_dup_err(int fd_f, int fd_p, char **tab_cmd, char *path_cmd, int posi
 void	handle_exec_err(int fd_p, char **tab_cmd, char *path_cmd);
 
 void	handle_dup_err_middle(int fd_p, char **tab_cmd, char *path_cmd);
-void	first_cmd(t_pipe d, char *cmd_path);
-void	last_cmd(t_pipe d, char *cmd_path, int process);
+void	ft_first_cmd(t_pipe d, char *cmd_path);
+void	ft_last_cmd(t_pipe d, char *cmd_path, int process);
 void	middle_cmd(t_pipe d, char *cmd_path, int process);
 #endif

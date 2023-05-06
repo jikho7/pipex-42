@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 13:08:41 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/06 13:11:05 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/06 14:59:19 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	free_double_tab(char **tab)
 		i++;
 	size = i;
 	i = 0;
-	while (i <= size)
+	while (i < size)
 	{
 		free(tab[i]);
 		i++;

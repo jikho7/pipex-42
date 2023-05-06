@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 13:06:55 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/06 13:12:09 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/06 16:03:33 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ char	*get_cmd_path(char *cmd, t_pipe d)
 	while (d.access[i])
 	{
 		cmd_path = ft_strjoin(d.access[i], cmd);
+		//fprintf(stderr, "cmd_path ft_cmd_valid ptr: %p\n", cmd_path);
 		if (access (cmd_path, F_OK) == 0)
 			return (cmd_path);
 		else
@@ -49,17 +50,21 @@ int is_cmd_valid(char *cmd_path, t_pipe d, int process)
 	{
 		if (process == 0)
 		{
-			command_not_found(*d.cmd_arg);
-			free_double_tab(d.cmd_arg);
+			command_not_found(*d.cmd_arg0);
+			free_double_tab(d.cmd_arg0);
 			close(d.fd_pipe2[1]);
+			exit(2);
 		}
 		if (process == 1)
 		{
-			command_not_found(*d.cmd_arg);
-			free_double_tab(d.cmd_arg);
+			command_not_found(*d.cmd_arg1);
+			free_double_tab(d.cmd_arg1);
 			close(d.fd_pipe2[0]);
+			exit(EXIT_FAILURE);
 		}
-		return(1);
+		//free(cmd_path); // ajout
+		//free(d.cmd_arg);
+		exit(EXIT_FAILURE);
 	}
 	return (0);
 }
