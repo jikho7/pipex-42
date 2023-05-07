@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 13:00:28 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/06 23:27:09 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/07 11:48:12 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,25 +27,6 @@ void	handle_dup_err(int fd_f, int fd_p, char **tab_cmd, int position)
 	perror("pipex");
 	exit(EXIT_FAILURE);
 }
-
-// void	handle_dup_err2(int fd_f, t_pipe d, char *path_cmd, int position)
-// {
-// 	free(path_cmd);
-// 	if (position == 0)
-// 	{
-// 		free_double_tab(cmd_arg);
-// 		close(fd_f);
-// 		close(d->fd_pipe2[0]);
-// 		handle_dup_err(0, d->fd_pipe2[0], d->cmd_arg1, cmd_path, 1);
-// 	}
-// 	if (position == 1)
-// 	{
-// 		free_double_tab(d.cmd_arg1);
-// 		close(fd_p);
-// 	}
-// 	perror("pipex");
-// 	exit(EXIT_FAILURE);
-// }
 
 void	handle_dup_err_middle(int fd_p, char **tab_cmd, char *path_cmd)
 {

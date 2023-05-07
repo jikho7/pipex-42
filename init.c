@@ -6,7 +6,7 @@
 /*   By: jdefayes <jdefayes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 13:03:36 by jdefayes          #+#    #+#             */
-/*   Updated: 2023/05/06 23:04:38 by jdefayes         ###   ########.fr       */
+/*   Updated: 2023/05/07 11:57:55 by jdefayes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ void	init_struc_pipe(t_pipe *d, int ac, char **av, char **env)
 	d->j = 2;
 	d->envp = env;
 	d->path = get_path(d->envp);
-	d->pid_main = getpid();
 	d->last_arg = av[ac - 2];
 	d->first_arg = av[2];
 	d->infile = av[1];
